@@ -26,8 +26,8 @@ public class TileImageDirectory {
         this.debug = debug;
     }
 
-    public void addTile(Tile tile, String url) {
-        this.keytoImage.put(TileToKey(tile), new Image(url));
+    public void addTile(Tile tile, Image image) {
+        this.keytoImage.put(TileToKey(tile), image);
     }
 
     public Optional<Image> getTileAsset(Tile tile) {
