@@ -18,8 +18,8 @@ public class TileImageDirectory {
         this.AssetDimension = assetDimension;
     }
 
-    public void addTile(Tile tile, Path assetPath) {
-        this.keytoImage.put(TileToKey(tile), new Image(assetPath.toUri().toString()));
+    public void addTile(Tile tile, String url) {
+        this.keytoImage.put(TileToKey(tile), new Image(url));
     }
 
     public Optional<Image> getTileAsset(Tile tile) {
