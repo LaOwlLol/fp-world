@@ -25,13 +25,21 @@ public class ScrollableWorldView {
      * height (in tiles) of the view port.
      */
     private int height;
+    private boolean debug;
 
     public ScrollableWorldView(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.debug = false;
     }
+
+    public ScrollableWorldView(int x, int y, int width, int height, boolean debug) {
+        this(x,y,width,height);
+        this.debug = debug;
+    }
+
 
     /**
      * Draw a window of a World from x,y to (x+width),(y+height) using the asset directory provided.
@@ -46,6 +54,9 @@ public class ScrollableWorldView {
                 int finalI = i;
                 int finalJ = j;
                 int dim = assets.getAssetDimension();
+                if (debug) {
+                    System.out.println("Painting cell: " + this.x + i + "," + this.y + j);
+                }
                 world.getTile(this.x+i, this.y+j).ifPresent(
 
                       tile -> assets.getTileAsset(tile).ifPresent(
