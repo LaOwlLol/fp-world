@@ -55,7 +55,7 @@ public class ScrollableWorldView {
                 int finalJ = j;
                 int dim = assets.getAssetDimension();
                 if (debug) {
-                    System.out.println("Painting cell: " + this.x + i + "," + this.y + j);
+                    System.out.println("Painting cell: " + (this.x + i) + "," + (this.y + j));
                 }
                 world.getTile(this.x+i, this.y+j).ifPresent(
 
