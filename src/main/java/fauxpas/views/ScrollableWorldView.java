@@ -57,4 +57,51 @@ public class ScrollableWorldView {
         }
 
     }
+
+    /**
+     * Get the x coordinate.
+     * @return x location on the x axis (in tiles).
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * Get the y coordinate.
+     * @return y location on the y axis (in tiles).
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * Move the view on the x axis.
+     * @param delta change to the x coordinate.
+     */
+    public void scrollX(int delta) {
+        if (delta+x > 0 && delta+x < width) {
+            x = delta +x;
+        }
+    }
+
+    /**
+     * Move the view on the y axis.
+     * @param delta change to the y coordinate.
+     */
+    public void scrollY(int delta) {
+        if (delta+y > 0 && delta+y < height) {
+            y = delta + y;
+        }
+    }
+
+    /**
+     * Move the view on either axis.
+     * @param deltaX change to the x coordinate.
+     * @param deltaY change to the y coordinate.
+     */
+    public void scroll(int deltaX, int deltaY) {
+        scrollX(deltaX);
+        scrollY(deltaY);
+    }
+
 }

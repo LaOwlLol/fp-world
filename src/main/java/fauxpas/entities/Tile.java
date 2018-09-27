@@ -27,7 +27,7 @@ public class Tile {
 
     /**
      * Get the index into this tile's type.
-     * @return
+     * @return index item in tile set.
      */
     public int getIndex() {
         return index;
