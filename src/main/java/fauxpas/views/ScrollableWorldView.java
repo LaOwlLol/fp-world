@@ -40,7 +40,6 @@ public class ScrollableWorldView {
         this.debug = debug;
     }
 
-
     /**
      * Draw a window of a World from x,y to (x+width),(y+height) using the asset directory provided.
      * @param gc the graphics context to draw on.
@@ -48,7 +47,6 @@ public class ScrollableWorldView {
      * @param assets the assets to use for tiles.
      */
     public void render(GraphicsContext gc, World world, TileImageDirectory assets) {
-
         for (int j = 0; j < this.height; ++j) {
             for (int i = 0; i < this.width; i++) {
                 int finalI = i;
@@ -67,11 +65,9 @@ public class ScrollableWorldView {
                                 }
                             }
                       )
-
                 );
             }
         }
-
     }
 
     /**
@@ -95,8 +91,8 @@ public class ScrollableWorldView {
      * @param delta change to the x coordinate.
      */
     public void scrollX(int delta) {
-        if (delta+x > 0 && delta+x < width) {
-            x = delta +x;
+        if (delta+x > -1 && delta+x < width) {
+            x = delta + x;
         }
     }
 
@@ -105,7 +101,7 @@ public class ScrollableWorldView {
      * @param delta change to the y coordinate.
      */
     public void scrollY(int delta) {
-        if (delta+y > 0 && delta+y < height) {
+        if (delta+y > -1 && delta+y < height) {
             y = delta + y;
         }
     }
