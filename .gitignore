@@ -1,5 +1,9 @@
 .gradle
 /build/
+.idea/
+
+# Include the javadocs though.
+!/build/docs/javadoc/*
 
 # Ignore Gradle GUI config
 gradle-app.setting
