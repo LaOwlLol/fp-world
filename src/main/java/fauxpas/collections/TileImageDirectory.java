@@ -30,7 +30,7 @@ public class TileImageDirectory {
         this.keytoImage.put(TileToKey(tile), new Image(url));
     }
 
-    public Optional<Image> getTileAsset(Tile tile) {\
+    public Optional<Image> getTileAsset(Tile tile) {
         if (this.debug) {
             System.out.println("Fetching '" + TileToKey(tile) + "' : " + keytoImage.containsKey(TileToKey(tile)));
         }
