@@ -60,7 +60,12 @@ public class ScrollableWorldView {
                 world.getTile(this.x+i, this.y+j).ifPresent(
 
                       tile -> assets.getTileAsset(tile).ifPresent(
-                            image -> gc.drawImage( image, (this.x+finalI)*dim, (this.y+finalJ)*dim )
+                            image -> {
+                                gc.drawImage(image, (this.x + finalI) * dim, (this.y + finalJ) * dim);
+                                if (debug) {
+                                    System.out.println("image painted!");
+                                }
+                            }
                       )
 
                 );
