@@ -19,7 +19,7 @@ public class TileImageDirectory {
     }
 
     public void addTile(Tile tile, Path assetPath) {
-        this.keytoImage.put(TileToKey(tile), new Image(assetPath.toString()));
+        this.keytoImage.put(TileToKey(tile), new Image(assetPath.toUri().toString()));
     }
 
     public Optional<Image> getTileAsset(Tile tile) {
