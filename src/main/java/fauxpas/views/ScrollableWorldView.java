@@ -4,6 +4,18 @@ import fauxpas.collections.TileImageDirectory;
 import fauxpas.entities.World;
 import javafx.scene.canvas.GraphicsContext;
 
+/**
+ * A scrollable window view on a World.
+ *
+ * This view renders a width by height window with it's upper left corner at x,y in the world.
+ *
+ * The position of x,y coordinate can he changed to 'scroll' the view around the World.
+ *
+ * Rending this view requires providing a GraphicsContext to render to, World to render, and a TileImageDirectory to
+ * use for tile values in the World.
+ *
+ * This view assumes tiles are square.
+ */
 public class ScrollableWorldView {
 
     /**
@@ -25,19 +37,12 @@ public class ScrollableWorldView {
      * height (in tiles) of the view port.
      */
     private int height;
-    private boolean debug;
 
     public ScrollableWorldView(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.debug = false;
-    }
-
-    public ScrollableWorldView(int x, int y, int width, int height, boolean debug) {
-        this(x,y,width,height);
-        this.debug = debug;
     }
 
     /**
@@ -51,18 +56,12 @@ public class ScrollableWorldView {
             for (int i = 0; i < this.width; i++) {
                 int finalI = i;
                 int finalJ = j;
-                int dim = assets.getAssetDimension();
-                if (debug) {
-                    System.out.println("Painting cell: " + (this.x + i) + "," + (this.y + j));
-                }
+                int dim = assets.getTileDimension();
                 world.getTile(this.x+i, this.y+j).ifPresent(
 
-                      tile -> assets.getTileAsset(tile).ifPresent(
+                      tile -> assets.get(tile).ifPresent(
                             image -> {
                                 gc.drawImage(image, (this.x + finalI) * dim, (this.y + finalJ) * dim);
-                                if (debug) {
-                                    System.out.println("image painted!");
-                                }
                             }
                       )
                 );

@@ -40,10 +40,22 @@ public class World {
         }
     }
 
+    /**
+     * translate from 2d coordinate to 1d array index.
+     * @param x first dimension (east/west) value
+     * @param y second dimension (north/south) value
+     * @return index into single dimension tiles array.
+     */
     private int CoordsToIndex(int x, int y) {
         return (this.width*y)+x;
     }
 
+    /**
+     * Get the tile for coordinate (x,y).
+     * @param x first dimension (east/west) value
+     * @param y second dimension (north/south) value
+     * @return tile for the world coordinate requested or null optional if the coordinate parameters were invalid.
+     */
     public Optional<Tile> getTile(int x, int y) {
         if (x > -1 && x < this.width && y > -1 && y < this.height) {
             return Optional.ofNullable(this.tiles.get(this.CoordsToIndex(x,y)));
