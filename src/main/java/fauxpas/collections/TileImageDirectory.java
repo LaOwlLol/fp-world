@@ -84,8 +84,11 @@ public class TileImageDirectory {
             System.out.println("Attempting to load TileImageDirectory file system at: " + directoryPath);
         }
 
-        try (Stream<Path> subdirs = Files.find( Paths.get(directoryPath), 0,
+        try (Stream<Path> subdirs = Files.find( Paths.get(directoryPath), 1,
                     (resultPath, attributes) -> attributes.isDirectory() )) {
+
+            //hack remove the top directory (todo better)
+            subdirs.filter(dir -> dir.toString().equals(directoryPath));
 
             AtomicInteger type = new AtomicInteger(0);
             subdirs.forEach( dir -> {
