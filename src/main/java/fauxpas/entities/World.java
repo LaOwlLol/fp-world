@@ -76,4 +76,20 @@ public class World {
             this.tiles.set(CoordsToIndex(x, y), tile);
         }
     }
+
+    /**
+     * Max distance east to west (in tiles) of this world.
+     * @return width of the world
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Max distance north to south (in tiles) of this world.
+     * @return height of the world
+     */
+    public int getHeight() {
+        return height;
+    }
 }

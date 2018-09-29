@@ -18,6 +18,9 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class ScrollableWorldView {
 
+    private final TileImageDirectory assets;
+    private World world;
+
     /**
      * current x coordinate (in tiles) in the world;
      */
@@ -38,28 +41,37 @@ public class ScrollableWorldView {
      */
     private int height;
 
-    public ScrollableWorldView(int x, int y, int width, int height) {
+    /**
+     *
+     * @param x coordinate (in tiles) in the world.
+     * @param y coordinate (in tiles) in the world.
+     * @param width (in tiles) of the view port.
+     * @param height (in tiles) of the view port.
+     * @param world to view and render.
+     * @param assets map from tile to image.
+     */
+    public ScrollableWorldView(int x, int y, int width, int height, World world, TileImageDirectory assets) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.world = world;
+        this.assets = assets;
     }
 
     /**
-     * Draw a window of a World from x,y to (x+width),(y+height) using the asset directory provided.
+     * Draw a window of our World from x,y to (x+width),(y+height) using our assets directory.
      * @param gc the graphics context to draw on.
-     * @param world the worlds to draw a window of.
-     * @param assets the assets to use for tiles.
      */
-    public void render(GraphicsContext gc, World world, TileImageDirectory assets) {
+    public void render(GraphicsContext gc) {
         for (int j = 0; j < this.height; ++j) {
             for (int i = 0; i < this.width; i++) {
                 int finalI = i;
                 int finalJ = j;
                 int dim = assets.getTileDimension();
-                world.getTile(this.x+i, this.y+j).ifPresent(
+                this.world.getTile(this.x+i, this.y+j).ifPresent(
 
-                      tile -> assets.get(tile).ifPresent(
+                      tile -> this.assets.get(tile).ifPresent(
                             image -> {
                                 gc.drawImage(image, (finalI) * dim, (finalJ) * dim);
                             }
@@ -90,7 +102,7 @@ public class ScrollableWorldView {
      * @param delta change to the x coordinate.
      */
     public void scrollX(int delta) {
-        if ( (x + delta) > -1 && (x + delta) < width ) {
+        if ( (x + delta) > -1 && (x + delta) > this.world.getWidth() ) {
             x = x + delta;
         }
     }
@@ -100,7 +112,7 @@ public class ScrollableWorldView {
      * @param delta change to the y coordinate.
      */
     public void scrollY(int delta) {
-        if ( (y + delta) > -1 && (y + delta) < height ) {
+        if ( (y + delta) > -1 && (y + delta) < this.world.getHeight() ) {
             y = y + delta;
         }
     }
