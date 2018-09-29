@@ -61,7 +61,7 @@ public class ScrollableWorldView {
 
                       tile -> assets.get(tile).ifPresent(
                             image -> {
-                                gc.drawImage(image, (this.x + finalI) * dim, (this.y + finalJ) * dim);
+                                gc.drawImage(image, (finalI) * dim, (finalJ) * dim);
                             }
                       )
                 );
