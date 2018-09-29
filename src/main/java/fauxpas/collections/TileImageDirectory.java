@@ -73,9 +73,16 @@ public class TileImageDirectory {
     }
 
     public static TileImageDirectory LoadFromFileSystem(String directoryPath, int dims) {
+        return LoadFromFileSystem(directoryPath, dims, false);
+    }
+
+    public static TileImageDirectory LoadFromFileSystem(String directoryPath, int dims, boolean verbose) {
 
         TileImageDirectory construct = new TileImageDirectory(dims);
 
+        if (verbose) {
+            System.out.println("Attempting to load TileImageDirectory file system at: " + directoryPath);
+        }
 
         try (Stream<Path> subdirs = Files.find( Paths.get(directoryPath), 0,
                     (resultPath, attributes) -> attributes.isDirectory() )) {
@@ -83,8 +90,14 @@ public class TileImageDirectory {
             AtomicInteger type = new AtomicInteger(0);
             subdirs.forEach( dir -> {
                 AtomicInteger count = new AtomicInteger(0);
+                if (verbose) {
+                    System.out.println("new asset type: "+ type.get() + "-> " + dir);
+                }
                 try (Stream<Path> list = Files.list(dir) ) {
                     list.forEach( path -> {
+                        if (verbose) {
+                            System.out.println("new tile: " + type.get() + "," + count.get() + "-> " + path.toString());
+                        }
                         construct.map(new Tile(type.get(), count.get()), new Image(path.toUri().toString()));
                         count.getAndIncrement();
                     } );
