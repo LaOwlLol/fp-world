@@ -88,10 +88,10 @@ public class TileImageDirectory {
                     (resultPath, attributes) -> attributes.isDirectory() )) {
 
             //hack remove the top directory (todo better)
-            subdirs.filter(dir -> dir.toString().equals(directoryPath));
+            Stream<Path> filteredSubdirs = subdirs.filter(dir -> !dir.toString().equals(directoryPath));
 
             AtomicInteger type = new AtomicInteger(0);
-            subdirs.forEach( dir -> {
+            filteredSubdirs.forEach( dir -> {
                 AtomicInteger count = new AtomicInteger(0);
                 if (verbose) {
                     System.out.println("new asset type: "+ type.get() + "-> " + dir);
