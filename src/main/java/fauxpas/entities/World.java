@@ -64,4 +64,16 @@ public class World {
             return Optional.empty();
         }
     }
+
+    /**
+     * Set the tile for coordinate (x,y)
+     * @param x first dimension (east/west) value
+     * @param y second dimension (north/south) value
+     * @param tile to be put at the location.
+     */
+    public void setTile(int x, int y, Tile tile) {
+        if (x > -1 && x < this.width && y > -1 && y < this.height) {
+            this.tiles.set(CoordsToIndex(x, y), tile);
+        }
+    }
 }
