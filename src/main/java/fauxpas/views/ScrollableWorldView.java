@@ -90,8 +90,8 @@ public class ScrollableWorldView {
      * @param delta change to the x coordinate.
      */
     public void scrollX(int delta) {
-        if (delta+x > -1 && delta+x < width) {
-            x = delta + x;
+        if ( (x + delta) > -1 && (x + delta) < width ) {
+            x = x + delta;
         }
     }
 
@@ -100,8 +100,8 @@ public class ScrollableWorldView {
      * @param delta change to the y coordinate.
      */
     public void scrollY(int delta) {
-        if (delta+y > -1 && delta+y < height) {
-            y = delta + y;
+        if ( (y + delta) > -1 && (y + delta) < height ) {
+            y = y + delta;
         }
     }
 
