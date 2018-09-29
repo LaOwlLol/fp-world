@@ -102,7 +102,7 @@ public class ScrollableWorldView {
      * @param delta change to the x coordinate.
      */
     public void scrollX(int delta) {
-        if ( (x + delta) > -1 && (x + delta) > this.world.getWidth() ) {
+        if ( (x + delta) > -1 && (x + width + delta) < this.world.getWidth() ) {
             x = x + delta;
         }
     }
@@ -112,7 +112,7 @@ public class ScrollableWorldView {
      * @param delta change to the y coordinate.
      */
     public void scrollY(int delta) {
-        if ( (y + delta) > -1 && (y + delta) < this.world.getHeight() ) {
+        if ( (y + delta) > -1 && (y + height + delta) < this.world.getHeight() ) {
             y = y + delta;
         }
     }
