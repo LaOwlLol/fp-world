@@ -3,8 +3,14 @@ package fauxpas.collections;
 import fauxpas.entities.Tile;
 import javafx.scene.image.Image;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * A Mapping (directory) of Tile to Image.
@@ -64,5 +70,37 @@ public class TileImageDirectory {
      */
     public int getTileDimension() {
         return tileDimension;
+    }
+
+    public static TileImageDirectory LoadFromFileSystem(String directoryPath, int dims) {
+
+        TileImageDirectory construct = new TileImageDirectory(dims);
+
+
+        try (Stream<Path> subdirs = Files.find( Paths.get(directoryPath), 0,
+                    (resultPath, attributes) -> attributes.isDirectory() )) {
+
+            AtomicInteger type = new AtomicInteger(0);
+            subdirs.forEach( dir -> {
+                AtomicInteger count = new AtomicInteger(0);
+                try (Stream<Path> list = Files.list(dir) ) {
+                    list.forEach( path -> {
+                        construct.map(new Tile(type.get(), count.get()), new Image(path.toUri().toString()));
+                        count.getAndIncrement();
+                    } );
+                    type.getAndIncrement();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } );
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return construct;
     }
 }
