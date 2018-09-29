@@ -98,6 +98,22 @@ public class ScrollableWorldView {
     }
 
     /**
+     * Max distance left to right (in tiles) of this view
+     * @return width of the view
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Max distance top to bottom (in tiles) of this view.
+     * @return height of the view
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
      * Move the view on the x axis.
      * @param delta change to the x coordinate.
      */
