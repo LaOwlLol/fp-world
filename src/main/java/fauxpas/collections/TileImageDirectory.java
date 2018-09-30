@@ -92,23 +92,8 @@ public class TileImageDirectory {
 
             AtomicInteger type = new AtomicInteger(0);
             filteredSubdirs.forEach( dir -> {
-                AtomicInteger count = new AtomicInteger(0);
-                if (verbose) {
-                    System.out.println("new asset type: "+ type.get() + "-> " + dir);
-                }
-                try (Stream<Path> list = Files.list(dir) ) {
-                    list.forEach( path -> {
-                        if (verbose) {
-                            System.out.println("new tile: " + type.get() + "," + count.get() + "-> " + path.toString());
-                        }
-                        construct.map(new Tile(type.get(), count.get()), new Image(path.toUri().toString()));
-                        count.getAndIncrement();
-                    } );
-                    type.getAndIncrement();
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
+                LoadImagesInFileSystemDirectory(construct, dir, type.get(), verbose);
+                type.getAndIncrement();
 
             } );
 
@@ -118,5 +103,25 @@ public class TileImageDirectory {
         }
 
         return construct;
+    }
+
+    private static void LoadImagesInFileSystemDirectory(TileImageDirectory assets, Path fsDir, int type, boolean verbose) {
+        AtomicInteger count = new AtomicInteger(0);
+        if (verbose) {
+            System.out.println("new asset type: "+ type + "-> " + fsDir);
+        }
+        try (Stream<Path> list = Files.list(fsDir) ) {
+            list.forEach( path -> {
+                if (verbose) {
+                    System.out.println("new tile: " + type + "," + count.get() + "-> " + path.toString());
+                }
+                assets.map(new Tile(type, count.get()), new Image(path.toUri().toString()));
+                count.getAndIncrement();
+            } );
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
