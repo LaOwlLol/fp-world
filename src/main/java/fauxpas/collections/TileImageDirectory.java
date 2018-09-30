@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 /**
@@ -26,6 +25,7 @@ import java.util.stream.Stream;
  */
 public class TileImageDirectory {
 
+    private static final String KEY_DELIMITER = ",";
     private HashMap<String, Image> keytoImage;
     private int tileDimension;
 
@@ -57,12 +57,21 @@ public class TileImageDirectory {
     }
 
     /**
-     * Translate from Tile to key name.
-     * @param tile tile to translate
+     * Translate from Tile object to key name.
+     * @param tile to translate
      * @return key to the tile.
      */
     private String TileToKey(Tile tile) {
-        return tile.getType()+","+tile.getIndex();
+        return tile.getType()+KEY_DELIMITER+tile.getIndex();
+    }
+
+    /**
+     * Translate from key name to Tile object.
+     * @param key to translate
+     * @return Tile object from the key.
+     */
+    private Tile KeyToTile(String key) {
+        return new Tile(key.split(KEY_DELIMITER)[0], key.split(KEY_DELIMITER)[1]);
     }
 
     /**
@@ -73,30 +82,45 @@ public class TileImageDirectory {
         return tileDimension;
     }
 
-    public static TileImageDirectory LoadFromFileSystem(String directoryPath, int dims) {
-        return LoadFromFileSystem(directoryPath, dims, false);
+
+    /**
+     * Quiet LoadFromFileSystem:
+     * Delegates to LoadFromFileSystem(String , int , boolean ) with verbose set to false.
+     * @param parentDirectoryPath path to directory to import from.
+     * @param dims dimension of images in child directories.
+     * @return a new TileImageDirectory of tiles mapped to images in child directories.
+     */
+    public static TileImageDirectory LoadFromFileSystem(String parentDirectoryPath, int dims) {
+        return LoadFromFileSystem(parentDirectoryPath, dims, false);
     }
 
-    public static TileImageDirectory LoadFromFileSystem(String directoryPath, int dims, boolean verbose) {
+    /**
+     *  Create an TileImageDirectory from files on the local file system.  The returned TileImageDirectory will contain
+     * tile to images mappings for all images in all child directories under the parent directory path given.
+     * Note that images in the parent directory will be ignored, only images in child directories are added.
+     * Tiles added to the mapping will have types matching the name of the child directory and index matching
+     * the path of the image.
+     *
+     * @param parentDirectoryPath path to directory to import from.
+     * @param dims dimension of images in child directories.
+     * @param verbose if true output items found to system.out
+     * @return a new TileImageDirectory of tiles mapped to images in child directories.
+     */
+    public static TileImageDirectory LoadFromFileSystem(String parentDirectoryPath, int dims, boolean verbose) {
 
         TileImageDirectory construct = new TileImageDirectory(dims);
 
         if (verbose) {
-            System.out.println("Attempting to load TileImageDirectory file system at: " + directoryPath);
+            System.out.println("Attempting to load TileImageDirectory file system at: " + parentDirectoryPath);
         }
 
-        try (Stream<Path> subdirs = Files.find( Paths.get(directoryPath), 1,
+        try (Stream<Path> subdirs = Files.find( Paths.get(parentDirectoryPath), 1,
                     (resultPath, attributes) -> attributes.isDirectory() )) {
 
             //hack remove the top directory (todo better)
-            Stream<Path> filteredSubdirs = subdirs.filter(dir -> !dir.toString().equals(directoryPath));
+            Stream<Path> filteredSubdirs = subdirs.filter(dir -> !dir.toString().equals(parentDirectoryPath));
 
-            AtomicInteger type = new AtomicInteger(0);
-            filteredSubdirs.forEach( dir -> {
-                LoadImagesInFileSystemDirectory(construct, dir, FileAsType(dir), verbose);
-                type.getAndIncrement();
-
-            } );
+            filteredSubdirs.forEach(dir -> LoadImagesInFileSystemDirectory(construct, dir, verbose));
 
         }
         catch (IOException e) {
@@ -106,36 +130,59 @@ public class TileImageDirectory {
         return construct;
     }
 
-    private static void LoadImagesInFileSystemDirectory(TileImageDirectory assets, Path fsDir, String type, boolean verbose) {
-        //AtomicInteger count = new AtomicInteger(0);
-        if (verbose) {
-            System.out.println("Found new tile type: "+ type + "-> " + fsDir);
-        }
-        try (Stream<Path> list = Files.list(fsDir) ) {
-            list.forEach( path -> {
+    /**
+     * Add images in a file system directory to the given TileImageDirectory.
+     * Tiles added to the mapping will have types matching the name of the given directory and index matching
+     * the path of the image.
+     *
+     * @param assets Tile to image mapping to add to.
+     * @param dir File system directory to import from.
+     * @param verbose if true output items found to system.out
+     */
+    private static void LoadImagesInFileSystemDirectory(TileImageDirectory assets, Path dir, boolean verbose) {
 
+        String type = FileName(dir);
+
+        if (verbose) {
+            System.out.println("Found new tile type: "+ type + "-> " + dir);
+        }
+        try (Stream<Path> list = Files.list(dir) ) {
+            list.forEach( path -> {
                 if (verbose) {
-                    System.out.println("\t new tile: " + type + "," + path.toString() + "-> " + path.toString());
+                    System.out.println("\t new tile: " + type + ", " + path.toString());
                 }
                 assets.map(new Tile(type, path.toString()), new Image(path.toUri().toString()));
-                //count.getAndIncrement();
             } );
-
         }
         catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static String FileAsType(Path path) {
+    /**
+     * Get the name of the file named by the path.
+     * @param path to parse.
+     * @return Name of file or path given.
+     */
+    private static String FileName(Path path) {
         return (new File(path.toUri())).getName();
     }
 
-    private static String ParentDirectoryAsType(Path path) {
+    /**
+     * Get the name of the parent directory of the path.
+     * @param path to parse.
+     * @return Name of the parent directory to path given.
+     */
+    private static String ParentDirectoryName(Path path) {
         return (new File(path.toUri())).getParentFile().getName();
     }
 
-    private static String ParentDirectoryAsType(String path) {
-        return ParentDirectoryAsType(Paths.get(path));
+    /**
+     * Get the name of the parent directory of the path.
+     * @param path to parse.
+     * @return Name of the parent directory to path given.
+     */
+    private static String ParentDirectoryName(String path) {
+        return ParentDirectoryName(Paths.get(path));
     }
 }
