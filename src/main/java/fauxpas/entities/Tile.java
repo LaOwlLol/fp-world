@@ -5,14 +5,14 @@ public class Tile {
     /**
      * The tile type (synonymous set,style, or theme).
      */
-    private int type;
+    private String type;
 
     /**
      * Which item in the type group.
      */
-    private int index;
+    private String index;
 
-    public Tile(int type, int index) {
+    public Tile(String type, String index) {
         this.type = type;
         this.index = index;
     }
@@ -21,7 +21,7 @@ public class Tile {
      * Get the type identifier.
      * @return tile type.
      */
-    public int getType() {
+    public String getType() {
         return type;
     }
 
@@ -29,7 +29,7 @@ public class Tile {
      * Get the index into this tile's type.
      * @return index item in tile set.
      */
-    public int getIndex() {
+    public String getIndex() {
         return index;
     }
 }

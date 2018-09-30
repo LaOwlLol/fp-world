@@ -3,6 +3,7 @@ package fauxpas.collections;
 import fauxpas.entities.Tile;
 import javafx.scene.image.Image;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,7 +93,7 @@ public class TileImageDirectory {
 
             AtomicInteger type = new AtomicInteger(0);
             filteredSubdirs.forEach( dir -> {
-                LoadImagesInFileSystemDirectory(construct, dir, type.get(), verbose);
+                LoadImagesInFileSystemDirectory(construct, dir, FileAsType(dir), verbose);
                 type.getAndIncrement();
 
             } );
@@ -105,23 +106,36 @@ public class TileImageDirectory {
         return construct;
     }
 
-    private static void LoadImagesInFileSystemDirectory(TileImageDirectory assets, Path fsDir, int type, boolean verbose) {
-        AtomicInteger count = new AtomicInteger(0);
+    private static void LoadImagesInFileSystemDirectory(TileImageDirectory assets, Path fsDir, String type, boolean verbose) {
+        //AtomicInteger count = new AtomicInteger(0);
         if (verbose) {
-            System.out.println("new asset type: "+ type + "-> " + fsDir);
+            System.out.println("Found new tile type: "+ type + "-> " + fsDir);
         }
         try (Stream<Path> list = Files.list(fsDir) ) {
             list.forEach( path -> {
+
                 if (verbose) {
-                    System.out.println("new tile: " + type + "," + count.get() + "-> " + path.toString());
+                    System.out.println("\t new tile: " + type + "," + path.toString() + "-> " + path.toString());
                 }
-                assets.map(new Tile(type, count.get()), new Image(path.toUri().toString()));
-                count.getAndIncrement();
+                assets.map(new Tile(type, path.toString()), new Image(path.toUri().toString()));
+                //count.getAndIncrement();
             } );
 
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String FileAsType(Path path) {
+        return (new File(path.toUri())).getName();
+    }
+
+    private static String ParentDirectoryAsType(Path path) {
+        return (new File(path.toUri())).getParentFile().getName();
+    }
+
+    private static String ParentDirectoryAsType(String path) {
+        return ParentDirectoryAsType(Paths.get(path));
     }
 }
