@@ -55,11 +55,11 @@ public class MiniMapWorldView {
     }
 
     private int getTileWidth() {
-        return (this.width/(world.getWidth()*assets.getTileDimension()))*assets.getTileDimension();
+        return (int)((float)this.width/(world.getWidth()*assets.getTileDimension()))*assets.getTileDimension();
     }
 
     private int getTileHeight() {
-        return (this.height/(world.getHeight()*assets.getTileDimension()))*assets.getTileDimension();
+        return (int)((float)this.height/(world.getHeight()*assets.getTileDimension()))*assets.getTileDimension();
     }
 
 }
