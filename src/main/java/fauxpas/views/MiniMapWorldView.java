@@ -34,10 +34,11 @@ public class MiniMapWorldView {
 
 
     public void render(GraphicsContext gc) {
-        int width = this.getTileWidth();
-        int height = this.getTileHeight();
-        for (int j = 0; j < world.getHeight(); ++j) {
-            for (int i = 0; i < world.getWidth(); i++) {
+        int w = this.getTileWidth();
+        int h = this.getTileHeight();
+
+        for (int j = 0; j < this.world.getHeight(); ++j) {
+            for (int i = 0; i < this.world.getWidth(); ++i) {
                 int finalI = i;
                 int finalJ = j;
 
@@ -45,7 +46,7 @@ public class MiniMapWorldView {
 
                       tile -> this.assets.get(tile).ifPresent(
                             image -> {
-                                gc.drawImage(image, (finalI) * width, (finalJ) *height);
+                                gc.drawImage(image, (finalI) * w, (finalJ) * h, w, h);
                             }
                       )
                 );

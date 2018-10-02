@@ -65,7 +65,7 @@ public class ScrollableWorldView {
      */
     public void render(GraphicsContext gc) {
         for (int j = 0; j < this.height; ++j) {
-            for (int i = 0; i < this.width; i++) {
+            for (int i = 0; i < this.width; ++i) {
                 int finalI = i;
                 int finalJ = j;
                 int dim = assets.getTileDimension();
@@ -73,7 +73,7 @@ public class ScrollableWorldView {
 
                       tile -> this.assets.get(tile).ifPresent(
                             image -> {
-                                gc.drawImage(image, (finalI) * dim, (finalJ) * dim);
+                                gc.drawImage(image, (finalI) * dim, (finalJ) * dim, dim, dim);
                             }
                       )
                 );
