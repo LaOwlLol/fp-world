@@ -46,7 +46,7 @@ public class MiniMapWorldView {
 
                       tile -> this.assets.get(tile).ifPresent(
                             image -> {
-                                gc.drawImage(image, (finalI) * w, (finalJ) * h, w, h);
+                                gc.drawImage(image, (finalI) * w, (finalJ) * h);
                             }
                       )
                 );
