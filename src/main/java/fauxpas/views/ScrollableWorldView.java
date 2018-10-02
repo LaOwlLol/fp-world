@@ -69,7 +69,7 @@ public class ScrollableWorldView {
                 int finalI = i;
                 int finalJ = j;
                 int dim = assets.getTileDimension();
-                this.world.getTile(i, j).ifPresent(
+                this.world.getTile(this.x+i, this.y+j).ifPresent(
 
                       tile -> this.assets.get(tile).ifPresent(
                             image -> {
