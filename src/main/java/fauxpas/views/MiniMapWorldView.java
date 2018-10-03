@@ -42,8 +42,13 @@ public class MiniMapWorldView implements PropertyChangeListener {
     }
 
     public void render(GraphicsContext gc) {
-        int w = (int)(((float)this.width/(gc.getCanvas().getWidth()))*assets.getTileDimension());
-        int h = (int)(((float)this.height/(gc.getCanvas().getHeight()))*assets.getTileDimension());
+        int w = (int) (assets.getTileDimension() *
+              ( (float) (gc.getCanvas().getWidth()) / (assets.getTileDimension()*world.getWidth()) ));
+        int h = (int) (assets.getTileDimension() *
+              ( (float) (gc.getCanvas().getHeight()) / (assets.getTileDimension()*world.getHeight()) ));
+
+        //int w = (int)(gc.getCanvas().getWidth()/(float)(this.width*assets.getTileDimension()));
+        //int h = (int)(gc.getCanvas().getHeight()/(float)(this.height*assets.getTileDimension()));
 
         for (int j = 0; j < this.world.getHeight(); ++j) {
             for (int i = 0; i < this.world.getWidth(); ++i) {
