@@ -4,6 +4,9 @@ import fauxpas.collections.TileImageDirectory;
 import fauxpas.entities.World;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 /**
  * A scrollable window view on a World.
  *
@@ -20,6 +23,8 @@ public class ScrollableWorldView {
 
     private final TileImageDirectory assets;
     private World world;
+
+    PropertyChangeSupport changeSupport;
 
     /**
      * current x coordinate (in tiles) in the world;
@@ -57,6 +62,7 @@ public class ScrollableWorldView {
         this.height = height;
         this.world = world;
         this.assets = assets;
+        this.changeSupport = new PropertyChangeSupport(this);
     }
 
     /**
@@ -70,11 +76,8 @@ public class ScrollableWorldView {
                 int finalJ = j;
                 int dim = assets.getTileDimension();
                 this.world.getTile(this.x+i, this.y+j).ifPresent(
-
                       tile -> this.assets.get(tile).ifPresent(
-                            image -> {
-                                gc.drawImage(image, (finalI) * dim, (finalJ) * dim, dim, dim);
-                            }
+                            image -> gc.drawImage(image, (finalI) * dim, (finalJ) * dim, dim, dim)
                       )
                 );
             }
@@ -118,8 +121,9 @@ public class ScrollableWorldView {
      * @param delta change to the x coordinate.
      */
     public void scrollX(int delta) {
-        if ( (x + delta) > -1 && (x + width + delta) < this.world.getWidth() ) {
-            x = x + delta;
+        if ( (this.x + delta) > -1 && (this.x + this.width + delta) < this.world.getWidth() ) {
+            changeSupport.firePropertyChange("x", this.x, this.x+delta);
+            this.x = this.x + delta;
         }
     }
 
@@ -128,8 +132,9 @@ public class ScrollableWorldView {
      * @param delta change to the y coordinate.
      */
     public void scrollY(int delta) {
-        if ( (y + delta) > -1 && (y + height + delta) < this.world.getHeight() ) {
-            y = y + delta;
+        if ( (this.y + delta) > -1 && (this.y + this.height + delta) < this.world.getHeight() ) {
+            changeSupport.firePropertyChange("y", this.y, this.y+delta);
+            this.y = this.y + delta;
         }
     }
 
@@ -141,6 +146,23 @@ public class ScrollableWorldView {
     public void scroll(int deltaX, int deltaY) {
         scrollX(deltaX);
         scrollY(deltaY);
+    }
+
+
+    /**
+     * Wrapper for addPropertyChangeListener
+     * @param pcl propertyChangeListener to add.
+     */
+    public void registerChangeListener(PropertyChangeListener pcl) {
+        changeSupport.addPropertyChangeListener(pcl);
+    }
+
+    /**
+     * Wrapper for removePropertyChangeListener
+     * @param pcl propertyChangeListener to remove.
+     */
+    public void unregisterChangeListener(PropertyChangeListener pcl) {
+        changeSupport.removePropertyChangeListener(pcl);
     }
 
 }
