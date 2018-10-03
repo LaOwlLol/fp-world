@@ -58,7 +58,7 @@ public class MiniMapWorldView implements PropertyChangeListener {
                 this.world.getTile(i, j).ifPresent(
 
                       tile -> this.assets.get(tile).ifPresent(
-                            image -> gc.drawImage(image, (finalI) * w, (finalJ) * h)
+                            image -> gc.drawImage(image, (finalI) * w, (finalJ) * h, w, h)
                       )
                 );
             }
