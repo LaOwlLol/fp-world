@@ -14,8 +14,7 @@ import java.beans.PropertyChangeSupport;
  *
  * The position of x,y coordinate can he changed to 'scroll' the view around the World.
  *
- * Rending this view requires providing a GraphicsContext to render to, World to render, and a TileImageDirectory to
- * use for tile values in the World.
+ * Rendering this view requires providing a GraphicsContext to render to.
  *
  * This view assumes tiles are square.
  */
