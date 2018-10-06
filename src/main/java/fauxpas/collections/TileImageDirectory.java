@@ -25,7 +25,7 @@ import java.util.stream.Stream;
  */
 public class TileImageDirectory {
 
-    private static final String KEY_DELIMITER = ",";
+    //private static final String KEY_DELIMITER = ",";
     private HashMap<String, Image> keytoImage;
     private int tileDimension;
 
@@ -62,16 +62,16 @@ public class TileImageDirectory {
      * @return key to the tile.
      */
     private String TileToKey(Tile tile) {
-        return tile.getType()+KEY_DELIMITER+tile.getIndex();
+        return Tile.toCSV(tile);
     }
 
     /**
      * Translate from key name to Tile object.
      * @param key to translate
-     * @return Tile object from the key.
+     * @return Optional Tile object or null if invalid string given.
      */
-    private Tile KeyToTile(String key) {
-        return new Tile(key.split(KEY_DELIMITER)[0], key.split(KEY_DELIMITER)[1]);
+    private Optional<Tile> KeyToTile(String key) {
+        return Tile.fromCSV(key);
     }
 
     /**
