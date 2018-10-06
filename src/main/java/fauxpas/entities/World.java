@@ -116,7 +116,7 @@ public class World {
      * @param path path of file to write to.
      */
     public static void WriteToFile(World world, String path) {
-        AtomicReference<String> collection = new AtomicReference<>(new String());
+        AtomicReference<String> collection = new AtomicReference<>();
 
         collection.set(collection.get().concat(String.valueOf(world.width)));
         collection.set(collection.get().concat(System.lineSeparator()));
@@ -131,7 +131,7 @@ public class World {
             Files.write(Paths.get(path), collection.get().getBytes());
         }
         catch (IOException e) {
-            //TODO what went wrong, and how to respond.
+            System.out.println("World write file failed. Error Unknown: " +path);
             e.printStackTrace();
         }
 
@@ -143,6 +143,10 @@ public class World {
      * @return Optional newly constructed world or empty optional.
      */
     public static Optional<World> ReadFromFile(String path) {
+        if (!Files.exists(Paths.get(path))) {
+            System.out.println("World read file failed. File not found: " +path);
+            return Optional.empty();
+        }
         try  {
             List<String> content = Files.readAllLines(Paths.get(path));
             int width = Integer.parseInt(content.remove(0));
@@ -160,6 +164,7 @@ public class World {
             return Optional.of(inited);
         }
         catch (IOException e) {
+            System.out.println("World read file failed. Malformed file: " +path);
             e.printStackTrace();
             return Optional.empty();
         }
