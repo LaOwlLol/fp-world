@@ -1,7 +1,12 @@
 package fauxpas.entities;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class World {
 
@@ -78,6 +83,17 @@ public class World {
     }
 
     /**
+     * Set the nth tile in the set.
+     * @param n which tile to set.
+     * @param tile new value
+     */
+    private void setTile(int n, Tile tile) {
+        if (n > -1 && n < this.tiles.size()) {
+            this.tiles.set(n, tile);
+        }
+    }
+
+    /**
      * Max distance east to west (in tiles) of this world.
      * @return width of the world
      */
@@ -92,4 +108,61 @@ public class World {
     public int getHeight() {
         return height;
     }
+
+    /**
+     * Write the contents of a World object to a file at path
+     * @param world to write to file.
+     * @param path path of file to write to.
+     */
+    public static void WriteToFile(World world, String path) {
+        String collection = new String();
+
+        collection.concat(String.valueOf(world.width));
+        collection.concat(System.lineSeparator());
+        collection.concat(String.valueOf(world.height));
+        collection.concat(System.lineSeparator());
+        world.tiles.forEach( t -> {
+            collection.concat(Tile.toCSV(t));
+            collection.concat(System.lineSeparator());
+        } );
+
+        try {
+            Files.write(Paths.get(path), collection.getBytes());
+        }
+        catch (IOException e) {
+            //TODO what went wrong, and how to respond.
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Construct a World by reading from a file.
+     * @param path to file to read.
+     * @return Optional newly constructed world or empty optional.
+     */
+    public static Optional<World> ReadFromFile(String path) {
+        try  {
+            List<String> content = Files.readAllLines(Paths.get(path));
+            int width = Integer.parseInt(content.remove(0));
+            int height = Integer.parseInt(content.remove(0));
+
+            Tile fail_default_tile = new Tile("default", "empty");
+
+            World inited = new World(width, height, Tile.fromCSV(content.get(0)).orElse(fail_default_tile));
+            AtomicInteger n = new AtomicInteger(0);
+            content.forEach( tileStr -> {
+                inited.setTile(n.get(), Tile.fromCSV(tileStr).orElse(fail_default_tile));
+                n.getAndIncrement();
+            });
+
+            return Optional.of(inited);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+
+    }
+
 }
