@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class World {
 
@@ -78,7 +79,7 @@ public class World {
      */
     public void setTile(int x, int y, Tile tile) {
         if (x > -1 && x < this.width && y > -1 && y < this.height) {
-            this.tiles.set(CoordsToIndex(x, y), tile);
+            this.setTile(CoordsToIndex(x, y), tile);
         }
     }
 
@@ -115,19 +116,19 @@ public class World {
      * @param path path of file to write to.
      */
     public static void WriteToFile(World world, String path) {
-        String collection = new String();
+        AtomicReference<String> collection = new AtomicReference<>(new String());
 
-        collection.concat(String.valueOf(world.width));
-        collection.concat(System.lineSeparator());
-        collection.concat(String.valueOf(world.height));
-        collection.concat(System.lineSeparator());
+        collection.set(collection.get().concat(String.valueOf(world.width)));
+        collection.set(collection.get().concat(System.lineSeparator()));
+        collection.set(collection.get().concat(String.valueOf(world.height)));
+        collection.set(collection.get().concat(System.lineSeparator()));
         world.tiles.forEach( t -> {
-            collection.concat(Tile.toCSV(t));
-            collection.concat(System.lineSeparator());
+            collection.set(collection.get().concat(Tile.toCSV(t)));
+            collection.set(collection.get().concat(System.lineSeparator()));
         } );
 
         try {
-            Files.write(Paths.get(path), collection.getBytes());
+            Files.write(Paths.get(path), collection.get().getBytes());
         }
         catch (IOException e) {
             //TODO what went wrong, and how to respond.
