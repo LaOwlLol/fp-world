@@ -116,7 +116,7 @@ public class World {
      * @param path path of file to write to.
      */
     public static void WriteToFile(World world, String path) {
-        AtomicReference<String> collection = new AtomicReference<>();
+        AtomicReference<String> collection = new AtomicReference<>(new String());
 
         collection.set(collection.get().concat(String.valueOf(world.width)));
         collection.set(collection.get().concat(System.lineSeparator()));
