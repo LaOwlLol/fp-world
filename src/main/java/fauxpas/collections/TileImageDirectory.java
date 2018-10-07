@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,6 +38,17 @@ public class TileImageDirectory {
     public TileImageDirectory(int tileDimension) {
         this.keytoImage = new HashMap<>();
         this.tileDimension = tileDimension;
+    }
+
+    /**
+     * Get the keys in the directory.
+     * @return Tiles in the directory.
+     */
+    public List<Tile> getKeys() {
+        return this.keytoImage.keySet().stream().map(this::KeyToTile)
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(Collectors.toList());
     }
 
     /**
