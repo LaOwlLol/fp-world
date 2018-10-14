@@ -29,6 +29,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+jar {
+    from project.sourceSets.main.allSource
+}
+
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
