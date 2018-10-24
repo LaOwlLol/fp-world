@@ -56,55 +56,70 @@ public class GaussianBlur implements Filter {
 
         PixelReader targetReader = target.getPixelReader();
         WritableImage buffer = new WritableImage((int) target.getWidth(), (int) target.getHeight());
-        double[][][] tempKernal = new double[this.width][this.width][GREEN+1];
+        double[][][] convolutionKernal;
+
+        double [] sum;
 
         for (int imageY = 0; imageY < target.getHeight(); ++imageY) {
             for (int imageX = 0; imageX < target.getWidth(); ++imageX) {
 
-                //multiply pass
-                for (int kernalY = 0; kernalY < this.width; ++kernalY ) {
-                    for (int kernalX = 0; kernalX < this.width; ++kernalX) {
-
-                        int i = kernalX - this.mid;
-                        int j = kernalY - this.mid;
-
-                        if ((imageX+i) > 0 && (imageX+i) < target.getWidth() &&
-                              (imageY+j) > 0 && (imageY+j) < target.getHeight()) {
-                            tempKernal[kernalX][kernalY][RED] = targetReader.getColor(imageX+i,imageY+j).getRed() *
-                                  kernal[kernalX][kernalY];
-
-                            tempKernal[kernalX][kernalY][BLUE] = targetReader.getColor(imageX+i,imageY+j).getBlue() *
-                                  kernal[kernalX][kernalY];
-
-                            tempKernal[kernalX][kernalY][GREEN] = targetReader.getColor(imageX+i,imageY+j).getGreen() *
-                                  kernal[kernalX][kernalY];
-                        }
-
-                    }
-                }
+                convolutionKernal = computeKernal(target, targetReader, imageY, imageX);
 
                 //sum pass;
-                double rsum = 0.0;
-                double bsum = 0.0;
-                double gsum = 0.0;
-                for (int kernalY = 0; kernalY < this.width; ++kernalY ) {
-                    for (int kernalX = 0; kernalX < this.width; ++kernalX) {
-                        rsum += tempKernal[kernalX][kernalY][RED];
-                        bsum += tempKernal[kernalX][kernalY][BLUE];
-                        gsum += tempKernal[kernalX][kernalY][GREEN];
-                    }
-                }
+                sum = sumKernal(convolutionKernal);
 
                 //apply
                 buffer.getPixelWriter().setColor(imageX, imageY,
-                      new Color(rsum/this.kernalValue,
-                            bsum/this.kernalValue,
-                            gsum/this.kernalValue,
+                      new Color(sum[RED]/this.kernalValue,
+                            sum[BLUE]/this.kernalValue,
+                            sum[GREEN]/this.kernalValue,
                             1.0)
                 );
             }
         }
 
         return buffer;
+    }
+
+    private double[] sumKernal(double[][][] tempKernal) {
+        double [] sum = new double[GREEN+1];
+        sum[RED] = 0.0;
+        sum[BLUE] = 0.0;
+        sum[GREEN] = 0.0;
+        for (int kernalY = 0; kernalY < this.width; ++kernalY ) {
+            for (int kernalX = 0; kernalX < this.width; ++kernalX) {
+                sum[RED] += tempKernal[kernalX][kernalY][RED];
+                sum[BLUE] += tempKernal[kernalX][kernalY][BLUE];
+                sum[GREEN] += tempKernal[kernalX][kernalY][GREEN];
+            }
+        }
+        return sum;
+    }
+
+    private double[][][] computeKernal(Image target, PixelReader targetReader, int imageY, int imageX) {
+        double[][][] tempKernal = new double[this.width][this.width][GREEN+1];
+
+        //multiply pass
+        for (int kernalY = 0; kernalY < this.width; ++kernalY ) {
+            for (int kernalX = 0; kernalX < this.width; ++kernalX) {
+
+                int i = kernalX - this.mid;
+                int j = kernalY - this.mid;
+
+                if ((imageX+i) > 0 && (imageX+i) < target.getWidth() &&
+                      (imageY+j) > 0 && (imageY+j) < target.getHeight()) {
+                    tempKernal[kernalX][kernalY][RED] = targetReader.getColor(imageX+i,imageY+j).getRed() *
+                          this.kernal[kernalX][kernalY];
+
+                    tempKernal[kernalX][kernalY][BLUE] = targetReader.getColor(imageX+i,imageY+j).getBlue() *
+                          this.kernal[kernalX][kernalY];
+
+                    tempKernal[kernalX][kernalY][GREEN] = targetReader.getColor(imageX+i,imageY+j).getGreen() *
+                          this.kernal[kernalX][kernalY];
+                }
+
+            }
+        }
+        return tempKernal;
     }
 }
