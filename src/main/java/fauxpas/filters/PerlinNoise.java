@@ -1,5 +1,6 @@
 package fauxpas.filters;
 
+import fauxpas.fastnoise.FastNoise;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -7,12 +8,12 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-public class WhiteNoise implements Filter {
+public class PerlinNoise implements Filter {
 
-    Random random;
+    FastNoise fastNoise;
 
-    public WhiteNoise() {
-        this.random = new Random(System.currentTimeMillis());
+    public PerlinNoise() {
+        fastNoise = new FastNoise(new Random(System.currentTimeMillis()).nextInt());
     }
 
     @Override
@@ -23,7 +24,7 @@ public class WhiteNoise implements Filter {
 
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
-                double color = Math.abs(Math.sin(random.nextGaussian()));
+                double color = Math.sin(fastNoise.GetPerlin(i, j));
                 bufferWriter.setColor(i, j, new Color(color, color, color, 1.0));
             }
         }

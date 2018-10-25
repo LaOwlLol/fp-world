@@ -1,6 +1,7 @@
 package fauxpas.entities;
 
 import fauxpas.filters.Filter;
+import fauxpas.filters.PerlinNoise;
 import fauxpas.filters.WhiteNoise;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
@@ -11,8 +12,7 @@ public class DepthMap {
 
     public DepthMap(int width, int height) {
         this.depthImage = new WritableImage(width, height);
-        WhiteNoise noiseGen = new WhiteNoise();
-        this.applyFilter(noiseGen);
+        this.applyFilter(new PerlinNoise());
     }
 
     public DepthMap(Image depthImage) {
