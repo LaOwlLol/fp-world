@@ -24,7 +24,7 @@ public class PerlinNoise implements Filter {
 
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
-                double color = Math.sin(fastNoise.GetPerlin(i, j));
+                double color = Math.abs(Math.sin(fastNoise.GetPerlin(i, j)));
                 bufferWriter.setColor(i, j, new Color(color, color, color, 1.0));
             }
         }
