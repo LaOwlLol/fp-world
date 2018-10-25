@@ -1,11 +1,9 @@
 package fauxpas.entities;
 
 import fauxpas.filters.Filter;
-import fauxpas.filters.RandomNoise;
+import fauxpas.filters.WhiteNoise;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-
-import java.nio.file.Paths;
 
 public class DepthMap {
 
@@ -13,7 +11,7 @@ public class DepthMap {
 
     public DepthMap(int width, int height) {
         this.depthImage = new WritableImage(width, height);
-        RandomNoise noiseGen = new RandomNoise();
+        WhiteNoise noiseGen = new WhiteNoise();
         this.applyFilter(noiseGen);
     }
 
