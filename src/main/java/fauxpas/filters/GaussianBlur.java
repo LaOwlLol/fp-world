@@ -2,8 +2,11 @@ package fauxpas.filters;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+
+import javax.swing.*;
 
 public class GaussianBlur implements Filter {
 
@@ -56,6 +59,8 @@ public class GaussianBlur implements Filter {
 
         PixelReader targetReader = target.getPixelReader();
         WritableImage buffer = new WritableImage((int) target.getWidth(), (int) target.getHeight());
+        PixelWriter bufferWriter = buffer.getPixelWriter();
+
         double[][][] convolutionKernal;
 
         double [] sum;
@@ -69,7 +74,8 @@ public class GaussianBlur implements Filter {
                 sum = sumKernal(convolutionKernal);
 
                 //apply
-                buffer.getPixelWriter().setColor(imageX, imageY,
+
+                bufferWriter.setColor(imageX, imageY,
                       new Color(sum[RED]/this.kernalValue,
                             sum[BLUE]/this.kernalValue,
                             sum[GREEN]/this.kernalValue,
