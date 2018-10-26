@@ -40,9 +40,9 @@ public class SumFilter implements Mixer {
                         Color color2 = reader2.getColor(i, j);
 
                         bufferWriter.setColor(i, j, new Color(
-                              (intensity1 * color1.getRed()) + (intensity2 * color2.getRed()),
-                              (intensity1 * color1.getGreen()) + (intensity2 * color2.getGreen()),
-                              (intensity1 * color1.getBlue()) + (intensity2 * color2.getBlue()),
+                              Math.min(1.0, (intensity1 * color1.getRed()) + (intensity2 * color2.getRed()) ),
+                              Math.min(1.0, (intensity1 * color1.getGreen()) + (intensity2 * color2.getGreen())),
+                              Math.min(1.0, (intensity1 * color1.getBlue()) + (intensity2 * color2.getBlue())),
                               1.0));
                     }
                 }
