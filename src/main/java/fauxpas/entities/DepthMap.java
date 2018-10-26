@@ -22,6 +22,9 @@ public class DepthMap {
         return depthImage;
     }
 
+    public void setImage(Image image) {
+        this.depthImage = image;
+    }
     /**
      * Get the intensity value (synonymous with depth) of a pixel
      * @param x coordinate of pixel to get
