@@ -6,21 +6,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class SumFilter implements Mixer {
-
-    double intensity1;
-    double intensity2;
-
-    public SumFilter() {
-        this.intensity1 = 1.0;
-        this.intensity1 = 1.0;
-    }
-
-    public SumFilter(double intensity1, double intensity2) {
-        this.intensity1 = intensity1;
-        this.intensity2 = intensity2;
-    }
-
+public class BlendFilter implements Mixer{
     @Override
     public Filter apply(Filter f1, Filter f2) {
         return new Filter() {
@@ -40,9 +26,9 @@ public class SumFilter implements Mixer {
                         Color color2 = reader2.getColor(i, j);
 
                         bufferWriter.setColor(i, j, new Color(
-                              (intensity1 * color1.getRed()) + (intensity2 * color2.getRed()),
-                              (intensity1 * color1.getGreen()) + (intensity2 * color2.getGreen()),
-                              (intensity1 * color1.getBlue()) + (intensity2 * color2.getBlue()),
+                              color1.getRed() - (color1.getRed() - color2.getRed())/2,
+                              color1.getGreen() - (color1.getGreen() - color2.getGreen())/2,
+                              color1.getBlue() - (color1.getBlue() - color2.getBlue())/2,
                               1.0));
                     }
                 }
