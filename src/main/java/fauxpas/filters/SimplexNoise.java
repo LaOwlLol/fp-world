@@ -41,7 +41,7 @@ public class SimplexNoise implements Filter {
 
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
-                double color =  Math.abs(fastNoise.GetNoise(this.frequencyX * i, this.frequencyY * j));
+                double color =  (fastNoise.GetNoise(this.frequencyX * i, this.frequencyY * j)/2)+0.5;
                 bufferWriter.setColor(i, j, new Color(color, color, color, 1.0));
             }
         }

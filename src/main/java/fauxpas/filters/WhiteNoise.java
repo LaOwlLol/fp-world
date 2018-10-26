@@ -23,7 +23,7 @@ public class WhiteNoise implements Filter {
 
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
-                double color = Math.abs(Math.sin(random.nextGaussian()));
+                double color = (Math.sin(random.nextGaussian())/2) +0.5;
                 bufferWriter.setColor(i, j, new Color(color, color, color, 1.0));
             }
         }
