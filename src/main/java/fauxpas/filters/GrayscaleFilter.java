@@ -19,9 +19,9 @@ public class GrayscaleFilter implements Filter {
             for (int i = 0; i < image.getWidth(); ++i) {
                 Color imageColor = imageReader.getColor(i, j);
 
-                double gray = (0.3)*imageColor.getRed() +
+                double gray = Math.min(1.0, (0.3*imageColor.getRed()) +
                       (0.59 * imageColor.getGreen()) +
-                      (0.11 * imageColor.getBlue());
+                      (0.11 * imageColor.getBlue()));
 
                 bufferWriter.setColor(i, j, new Color(gray, gray, gray, imageColor.getOpacity()));
             }
