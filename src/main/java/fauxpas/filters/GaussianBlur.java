@@ -79,7 +79,7 @@ public class GaussianBlur implements Filter {
                       new Color(sum[RED]/this.kernalValue,
                             sum[GREEN]/this.kernalValue,
                             sum[BLUE]/this.kernalValue,
-                            1.0)
+                            targetReader.getColor(imageX, imageY).getOpacity())
                 );
             }
         }

@@ -6,18 +6,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class RedistributionFilter implements Filter {
-
-    private final double pow;
-
-    public RedistributionFilter() {
-        this.pow = 2.0;
-    }
-
-    public RedistributionFilter(double power) {
-        this.pow = power;
-    }
-
+public class GrayscaleFilter implements Filter {
     @Override
     public Image apply(Image image) {
 
@@ -29,13 +18,12 @@ public class RedistributionFilter implements Filter {
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
                 Color imageColor = imageReader.getColor(i, j);
-                bufferWriter.setColor(i, j,
-                      new Color(Math.pow( imageColor.getRed(), this.pow ),
-                            Math.pow( imageColor.getGreen(), this.pow ),
-                            Math.pow( imageColor.getBlue(), this.pow ),
-                            imageColor.getOpacity()
-                      )
-                );
+
+                double gray = (0.3)*imageColor.getRed() +
+                      (0.59 * imageColor.getGreen()) +
+                      (0.11 * imageColor.getBlue());
+
+                bufferWriter.setColor(i, j, new Color(gray, gray, gray, imageColor.getOpacity()));
             }
         }
 
