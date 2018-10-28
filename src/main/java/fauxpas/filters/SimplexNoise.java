@@ -15,8 +15,8 @@ public class SimplexNoise implements Filter {
     private float frequencyY;
 
     public SimplexNoise() {
-        fastNoise = new FastNoise(new Random(System.currentTimeMillis()).nextInt());
-        fastNoise.SetNoiseType(FastNoise.NoiseType.Simplex);
+        this.fastNoise = new FastNoise(new Random(System.currentTimeMillis()).nextInt());
+        this.fastNoise.SetNoiseType(FastNoise.NoiseType.Simplex);
         this.frequencyX = 1.0f;
         this.frequencyY = 1.0f;
     }
@@ -41,7 +41,7 @@ public class SimplexNoise implements Filter {
 
         for (int j = 0; j < image.getHeight(); ++j) {
             for (int i = 0; i < image.getWidth(); ++i) {
-                double color =  (fastNoise.GetNoise(this.frequencyX * i, this.frequencyY * j)/2)+0.5;
+                double color =  (this.fastNoise.GetNoise(this.frequencyX * i, this.frequencyY * j)/2)+0.5;
                 bufferWriter.setColor(i, j, new Color(color, color, color, 1.0));
             }
         }

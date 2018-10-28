@@ -8,8 +8,8 @@ import javafx.scene.paint.Color;
 
 public class SumFilter implements Mixer {
 
-    double intensity1;
-    double intensity2;
+    private double intensity1;
+    private double intensity2;
 
     public SumFilter() {
         this.intensity1 = 1.0;
@@ -23,32 +23,29 @@ public class SumFilter implements Mixer {
 
     @Override
     public Filter apply(Filter f1, Filter f2) {
-        return new Filter() {
-            @Override
-            public Image apply(Image image) {
-                WritableImage buffer = new WritableImage((int)image.getWidth(), (int)image.getHeight());
-                PixelWriter bufferWriter = buffer.getPixelWriter();
+        return image -> {
+            WritableImage buffer = new WritableImage((int)image.getWidth(), (int)image.getHeight());
+            PixelWriter bufferWriter = buffer.getPixelWriter();
 
-                Image image1 = f1.apply(image);
-                PixelReader reader1 = image1.getPixelReader();
-                Image image2 = f2.apply(image);
-                PixelReader reader2 = image2.getPixelReader();
+            Image image1 = f1.apply(image);
+            PixelReader reader1 = image1.getPixelReader();
+            Image image2 = f2.apply(image);
+            PixelReader reader2 = image2.getPixelReader();
 
-                for (int j = 0; j < image.getHeight(); ++j) {
-                    for (int i = 0; i < image.getWidth(); ++i) {
-                        Color color1 = reader1.getColor(i, j);
-                        Color color2 = reader2.getColor(i, j);
+            for (int j = 0; j < image.getHeight(); ++j) {
+                for (int i = 0; i < image.getWidth(); ++i) {
+                    Color color1 = reader1.getColor(i, j);
+                    Color color2 = reader2.getColor(i, j);
 
-                        bufferWriter.setColor(i, j, new Color(
-                              Math.min(1.0, (intensity1 * color1.getRed()) + (intensity2 * color2.getRed()) ),
-                              Math.min(1.0, (intensity1 * color1.getGreen()) + (intensity2 * color2.getGreen())),
-                              Math.min(1.0, (intensity1 * color1.getBlue()) + (intensity2 * color2.getBlue())),
-                              1.0));
-                    }
+                    bufferWriter.setColor(i, j, new Color(
+                          Math.min(1.0, (this.intensity1 * color1.getRed()) + (this.intensity2 * color2.getRed()) ),
+                          Math.min(1.0, (this.intensity1 * color1.getGreen()) + (this.intensity2 * color2.getGreen())),
+                          Math.min(1.0, (this.intensity1 * color1.getBlue()) + (this.intensity2 * color2.getBlue())),
+                          1.0));
                 }
-
-                return buffer;
             }
+
+            return buffer;
         };
     }
 }

@@ -6,7 +6,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class SobelFilter implements Filter {
+public class SobelFilter implements Filter, Convolution {
 
     private static final int RED = 0;
     private static final int BLUE = 1;
@@ -40,8 +40,8 @@ public class SobelFilter implements Filter {
         WritableImage buffer = new WritableImage((int) target.getWidth(), (int) target.getHeight());
         PixelWriter bufferWriter = buffer.getPixelWriter();
 
-        double[][][] horzConvolutionKernal;
-        double[][][] vertConvolutionKernal;
+        double[][][] horzConvolutionKernel;
+        double[][][] vertConvolutionKernel;
 
         double [] horzSum;
         double [] vertSum;
@@ -49,12 +49,12 @@ public class SobelFilter implements Filter {
         for (int imageY = 0; imageY < target.getHeight(); ++imageY) {
             for (int imageX = 0; imageX < target.getWidth(); ++imageX) {
 
-                horzConvolutionKernal = computeKernal(target, targetReader, horzKernal, imageY, imageX);
-                vertConvolutionKernal = computeKernal(target, targetReader, vertKernal, imageY, imageX);
+                horzConvolutionKernel = computeKernel(target, targetReader, horzKernal, imageY, imageX);
+                vertConvolutionKernel = computeKernel(target, targetReader, vertKernal, imageY, imageX);
 
                 //sum pass;
-                horzSum = sumKernal(horzConvolutionKernal);
-                vertSum = sumKernal(vertConvolutionKernal);
+                horzSum = sumKernel(horzConvolutionKernel);
+                vertSum = sumKernel(vertConvolutionKernel);
 
                 //apply
 
@@ -71,45 +71,46 @@ public class SobelFilter implements Filter {
         return buffer;
     }
 
-    private double[] sumKernal(double[][][] tempKernal) {
+    private double[] sumKernel(double[][][] tempKernal) {
         double [] sum = new double[GREEN+1];
         sum[RED] = 0.0;
         sum[BLUE] = 0.0;
         sum[GREEN] = 0.0;
-        for (int kernalY = 0; kernalY < WIDTH; ++kernalY ) {
-            for (int kernalX = 0; kernalX < WIDTH; ++kernalX) {
-                sum[RED] += tempKernal[kernalX][kernalY][RED];
-                sum[BLUE] += tempKernal[kernalX][kernalY][BLUE];
-                sum[GREEN] += tempKernal[kernalX][kernalY][GREEN];
+        for (int kernelY = 0; kernelY < WIDTH; ++kernelY ) {
+            for (int kernelX = 0; kernelX < WIDTH; ++kernelX) {
+                sum[RED] += tempKernal[kernelX][kernelY][RED];
+                sum[BLUE] += tempKernal[kernelX][kernelY][BLUE];
+                sum[GREEN] += tempKernal[kernelX][kernelY][GREEN];
             }
         }
         return sum;
     }
 
-    private double[][][] computeKernal(Image target, PixelReader targetReader, double[][] kernal, int imageY, int imageX) {
-        double[][][] tempKernal = new double[WIDTH][WIDTH][GREEN+1];
+    @Override
+    public double[][][] computeKernel(Image target, PixelReader targetReader, double[][] convolution, int imageY, int imageX) {
+        double[][][] tempKernel = new double[WIDTH][WIDTH][GREEN+1];
 
         //multiply pass
-        for (int kernalY = 0; kernalY < WIDTH; ++kernalY ) {
-            for (int kernalX = 0; kernalX < WIDTH; ++kernalX) {
+        for (int kernelY = 0; kernelY < WIDTH; ++kernelY ) {
+            for (int kernelX = 0; kernelX < WIDTH; ++kernelX) {
 
-                int i = kernalX - (WIDTH/2);
-                int j = kernalY - (WIDTH/2);
+                int i = kernelX - (WIDTH/2);
+                int j = kernelY - (WIDTH/2);
 
                 if ((imageX+i) > 0 && (imageX+i) < target.getWidth() &&
                       (imageY+j) > 0 && (imageY+j) < target.getHeight()) {
-                    tempKernal[kernalX][kernalY][RED] = targetReader.getColor(imageX+i,imageY+j).getRed() *
-                          kernal[kernalX][kernalY];
+                    tempKernel[kernelX][kernelY][RED] = targetReader.getColor(imageX+i,imageY+j).getRed() *
+                          convolution[kernelX][kernelY];
 
-                    tempKernal[kernalX][kernalY][BLUE] = targetReader.getColor(imageX+i,imageY+j).getBlue() *
-                          kernal[kernalX][kernalY];
+                    tempKernel[kernelX][kernelY][BLUE] = targetReader.getColor(imageX+i,imageY+j).getBlue() *
+                          convolution[kernelX][kernelY];
 
-                    tempKernal[kernalX][kernalY][GREEN] = targetReader.getColor(imageX+i,imageY+j).getGreen() *
-                          kernal[kernalX][kernalY];
+                    tempKernel[kernelX][kernelY][GREEN] = targetReader.getColor(imageX+i,imageY+j).getGreen() *
+                          convolution[kernelX][kernelY];
                 }
 
             }
         }
-        return tempKernal;
+        return tempKernel;
     }
 }
