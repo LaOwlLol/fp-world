@@ -15,6 +15,7 @@ public class SobelFilter implements Filter {
     double[][] horzKernal;
     double[][] vertKernal;
 
+
     public SobelFilter() {
         this.horzKernal = new double[WIDTH][WIDTH];
         this.horzKernal[0][0] = -0.5;
@@ -58,9 +59,10 @@ public class SobelFilter implements Filter {
                 //apply
 
                 bufferWriter.setColor(imageX, imageY,
-                      new Color( Math.sqrt( Math.pow( vertSum[RED], 2) + Math.pow(horzSum[RED], 2) ),
-                            Math.sqrt( Math.pow( vertSum[GREEN], 2) + Math.pow(horzSum[GREEN], 2) ),
-                            Math.sqrt( Math.pow( vertSum[BLUE], 2) + Math.pow(horzSum[BLUE], 2) ),
+                      new Color(
+                            Math.min(1.0, Math.sqrt( Math.pow( vertSum[RED], 2) + Math.pow(horzSum[RED], 2) )),
+                            Math.min(1.0, Math.sqrt( Math.pow( vertSum[GREEN], 2) + Math.pow(horzSum[GREEN], 2) )),
+                            Math.min(1.0, Math.sqrt( Math.pow( vertSum[BLUE], 2) + Math.pow(horzSum[BLUE], 2) )),
                             1.0)
                 );
             }
